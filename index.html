@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0369a1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Thi đua Tổ Xã hội 2026-2027 - THPT Yên Dũng số 3</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --success: #15803d;
+      --danger: #b91c1c;
+      --bg: #e2e8f0;
+      --card: #ffffff;
+      --font-main: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; font-family: var(--font-main); }
+    body {
+      background: var(--bg);
+      margin: 0;
+      padding: 12px;
+      color: #0f172a;
+      font-size: 14px;
+    }
+    .main-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
+    }
+
+    /* BANNER */
+    .banner-box {
+      background: linear-gradient(135deg, #0f172a 0%, #0369a1 55%, #0d9488 100%);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .banner-left { max-width: 84%; }
+    .banner-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-bottom: 6px;
+    }
+    .banner-title { margin: 0 0 4px; font-size: 18px; font-weight: 800; line-height: 1.3; }
+    .banner-sub { margin: 0; font-size: 13px; color: #e2e8f0; }
+    .banner-icon {
+      text-align: center;
+      background: rgba(255,255,255,0.15);
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    /* TABS CHUYỂN CHẾ ĐỘ */
+    .nav-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 5px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .tab-btn {
+      padding: 10px 8px;
+      border: none;
+      border-radius: 9px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      background: transparent;
+      color: #475569;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary-dark);
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+    }
+
+    /* CHỌN GIÁO VIÊN */
+    .teacher-card {
+      background: #f8fafc;
+      border: 1.5px solid #bae6fd;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .field-group label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 6px;
+    }
+    select, input, button {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      color: #0f172a;
+    }
+    .w-100 { width: 100%; }
+
+    /* LƯỚI 9 THÁNG */
+    .months-grid {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 768px) {
+      .months-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .banner-icon { display: none; }
+      .banner-left { max-width: 100%; }
+    }
+    .month-card {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 8px 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .month-card:hover { border-color: var(--primary); }
+    .month-card.active {
+      background: #eff6ff;
+      border-color: var(--primary);
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.18);
+    }
+    .month-name { font-size: 12px; font-weight: 600; color: #475569; }
+    .month-pts { font-size: 16px; font-weight: 800; color: #0f172a; margin: 2px 0; }
+    .month-badge { font-size: 11px; font-weight: 700; }
+
+    /* THỐNG KÊ */
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; text-align: center; }
+    .stat-label { font-size: 13px; color: #475569; font-weight: 600; }
+    .stat-number { font-size: 24px; font-weight: 800; color: var(--primary); margin-top: 2px; }
+
+    /* CẢNH BÁO THÁNG ĐÃ CHỐT */
+    .closed-month-alert {
+      background: #fff7ed;
+      border: 1px solid #fdba74;
+      color: #9a3412;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    /* FORM NHẬP */
+    .form-section { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+    .input-row { display: flex; gap: 8px; }
+    @media (max-width: 600px) {
+      .input-row { flex-direction: column; }
+      .input-row input#inpScore { width: 100% !important; }
+    }
+    .btn-save { background: var(--primary); color: #fff; font-weight: 700; border: none; cursor: pointer; }
+    .btn-save:hover { background: var(--primary-dark); }
+    .btn-excel { background: #15803d; color: #fff; border: none; font-weight: 600; cursor: pointer; }
+    .btn-print { background: #0369a1; color: #fff; border: none; font-weight: 600; cursor: pointer; }
+    .btn-ref { background: #fff; color: #0369a1; border: 1px solid #0369a1; font-weight: 600; cursor: pointer; }
+    .checkbox-box { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--danger); font-weight: 600; margin-top: 2px; cursor: pointer; }
+
+    .log-item { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #f1f5f9; gap: 10px; }
+    .btn-del { color: #94a3b8; border: none; background: transparent; cursor: pointer; font-size: 16px; padding: 2px 6px; }
+    .btn-del:hover { color: var(--danger); }
+
+    /* BẢNG TỔNG HỢP CẢ TỔ */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    .status-strip {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+    .team-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    .team-table th {
+      background: #0369a1;
+      color: #fff;
+      padding: 10px 8px;
+      text-align: center;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .team-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: center;
+    }
+    .team-table tr:hover td { background: #f0f9ff; }
+    .badge-done { background: #dcfce7; color: #15803d; padding: 3px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .badge-base { background: #f1f5f9; color: #64748b; padding: 3px 9px; border-radius: 12px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+
+    .export-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #printReportArea { display: none; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .main-wrap { display: none !important; }
+      #printReportArea { display: block !important; padding: 20px; font-family: "Times New Roman", Times, serif !important; }
+      #printReportArea * { font-family: "Times New Roman", Times, serif !important; }
+      table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+      th, td { border: 1px solid #333; padding: 6px 8px; font-size: 13px; }
+      th { background-color: #f1f5f9; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-wrap">
+  <!-- BANNER -->
+  <div class="banner-box">
+    <div class="banner-left">
+      <div class="banner-badge">SỞ GDĐT THÀNH PHỐ BẮC NINH • TRƯỜNG THPT YÊN DŨNG SỐ 3</div>
+      <div class="banner-title" id="lblTenTo">THI ĐUA TỔ XÃ HỘI NĂM HỌC 2026 - 2027</div>
+      <div class="banner-sub">Theo Quyết định số 242/QĐ-THPTYD3</div>
+    </div>
+    <div class="banner-icon">
+      <div style="font-size: 26px;">🎖</div>
+      <div style="font-size: 10px; font-weight: 700;">QC 242</div>
+    </div>
+  </div>
+
+  <!-- 2 TAB CHÍNH -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="tabBtnDetail" onclick="switchTab('detail')">✍️ Cá nhân tự chấm điểm</button>
+    <button class="tab-btn" id="tabBtnTeam" onclick="switchTab('team')">🏆 Bảng tổng hợp điểm tổ</button>
+  </div>
+
+  <!-- ================= TAB 1: CÁ NHÂN TỰ CHẤM ĐIỂM ================= -->
+  <div id="panelDetail">
+    <div class="teacher-card">
+      <div class="field-group">
+        <label>👤 Họ và tên giáo viên:</label>
+        <select id="selMember" class="w-100" onchange="onMemberChange()">
+          <option value="">-- Đang tải danh sách giáo viên --</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="needSelectAlert" style="text-align:center; padding:26px 15px; background:#fffbeb; border:1px dashed #f59e0b; border-radius:12px; color:#92400e; margin-bottom:16px;">
+      Vui lòng chọn <b>Họ và tên giáo viên</b> ở ô phía trên để chấm điểm.
+    </div>
+
+    <div id="personalWorkspace" style="display:none;">
+      <!-- LƯỚI 9 THÁNG -->
+      <div class="months-grid" id="monthsGrid"></div>
+
+      <!-- CẢNH BÁO KHI CHỌN THÁNG 9 / THÁNG 10 ĐÃ TỔNG HỢP -->
+      <div class="closed-month-alert" id="closedMonthAlert"></div>
+
+      <!-- BẢNG TỔNG HỢP CÁ NHÂN -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label" id="currentMonthTitle">Điểm tháng 11</div>
+          <div class="stat-number" id="currentMonthScore">100</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Tổng cả năm học (cơ sở 900đ)</div>
+          <div class="stat-number" id="yearTotalScore" style="color: #0f766e;">900</div>
+        </div>
+      </div>
+
+      <!-- FORM NHẬP THEO QUY CHẾ 242 -->
+      <div class="form-section">
+        <div style="font-weight: 700; font-size: 13.5px; margin-bottom: 8px; color: #1e293b;">
+          Tự chấm điểm cho đ/c <span id="formMemberName" style="color:#0369a1;">...</span> — <span id="formMonthLabel" style="color: var(--primary);">Tháng 11</span>:
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <select id="presetSelect" onchange="applyPreset()">
+            <option value="">-- Chọn tiêu chí cộng / trừ theo Quy chế 242/QĐ-THPTYD3 --</option>
+
+            <optgroup label="CỘNG: 1. ĐẠO ĐỨC, LỐI SỐNG & KHEN THƯỞNG (TC 1)">
+              <option value="2|HS ca ngợi (viết bài web, báo...) (+2đ)">Học sinh ca ngợi (viết bài trên web, báo...) (+2đ/lần)</option>
+              <option value="2|BGH biểu dương gương người tốt việc tốt (+2đ)">BGH biểu dương gương người tốt, việc tốt (+2đ/lần)</option>
+            </optgroup>
+
+            <optgroup label="CỘNG: 2. CHUYÊN MÔN, THI GVG & GIỜ DẠY (TC 2.1, 2.2, 2.5)">
+              <option value="1|Dạy thay theo phân công (+1đ)">Dạy thay cho GV công tác/việc riêng đột xuất (+1đ/tiết)</option>
+              <option value="8|Hồ sơ chuyên môn loại Tốt (+8đ)">Hồ sơ chuyên môn loại Tốt (+8đ/lần/loại)</option>
+              <option value="5|Hồ sơ chuyên môn loại Khá (+5đ)">Hồ sơ chuyên môn loại Khá (+5đ/lần/loại)</option>
+              <option value="1|Hồ sơ chuyên môn loại Trung bình (+1đ)">Hồ sơ chuyên môn loại Trung bình (+1đ/lần/loại)</option>
+              <option value="3|Hồ sơ chủ nhiệm loại Tốt (+3đ)">Hồ sơ chủ nhiệm loại Tốt (+3đ/lần)</option>
+              <option value="2|Hồ sơ chủ nhiệm loại Khá (+2đ)">Hồ sơ chủ nhiệm loại Khá (+2đ/lần)</option>
+              <option value="3|Giờ dạy Hội giảng/SHCM loại Giỏi (+3đ)">Giờ dạy Hội giảng/SHCM cấp trường loại Giỏi (+3đ/giờ)</option>
+              <option value="2|Giờ dạy Hội giảng/SHCM loại Khá (+2đ)">Giờ dạy Hội giảng/SHCM cấp trường loại Khá (+2đ/giờ)</option>
+              <option value="6|Giờ dạy cụm/liên trường loại Giỏi (+6đ)">Giờ dạy cụm/liên trường loại Giỏi (+6đ/giờ)</option>
+              <option value="4|Giờ dạy cụm/liên trường loại Khá (+4đ)">Giờ dạy cụm/liên trường loại Khá (+4đ/giờ)</option>
+              <option value="7|Báo cáo chuyên đề SHCM Xuất sắc (+7đ)">Báo cáo chuyên đề SHCM Xuất sắc (+7đ)</option>
+              <option value="5|Báo cáo chuyên đề SHCM Tốt (+5đ)">Báo cáo chuyên đề SHCM Tốt (+5đ)</option>
+              <option value="3|Báo cáo chuyên đề SHCM Khá (+3đ)">Báo cáo chuyên đề SHCM Khá (+3đ)</option>
+              <option value="120|Đạt GVG/GVCNG cấp tỉnh Vòng 1 (+120đ)">Đạt GVG/GVCNG cấp tỉnh Vòng 1 (+120đ)</option>
+              <option value="50|Dự thi GVG/GVCNG cấp tỉnh Vòng 1 không đạt (+50đ)">Dự thi GVG/GVCNG tỉnh Vòng 1 không đạt (+50đ)</option>
+              <option value="120|Đạt GVG/GVCNG cấp tỉnh Vòng 2 (+120đ)">Đạt GVG/GVCNG cấp tỉnh Vòng 2 (+120đ)</option>
+              <option value="50|Dự thi GVG/GVCNG cấp tỉnh Vòng 2 không đạt (+50đ)">Dự thi GVG/GVCNG tỉnh Vòng 2 không đạt (+50đ)</option>
+              <option value="5|Báo cáo viên cấp tỉnh do Sở triệu tập (+5đ)">Báo cáo viên cấp tỉnh do Sở triệu tập (+5đ)</option>
+              <option value="5|Điểm thi TN THPT đảm bảo chất lượng (+5đ)">Điểm thi TN THPT môn phụ trách đạt (+5đ)</option>
+            </optgroup>
+
+            <optgroup label="CỘNG: 3. BỒI DƯỠNG HSG & KHKT QUỐC GIA (=1.5 LẦN TỈNH)">
+              <option value="375|Giải Nhất Quốc gia VH / KHKT (+375đ)">Giải Nhất Quốc gia VH / KHKT (+375đ/giải)</option>
+              <option value="240|Giải Nhì Quốc gia VH / KHKT (+240đ)">Giải Nhì Quốc gia VH / KHKT (+240đ/giải)</option>
+              <option value="150|Giải Ba Quốc gia VH / KHKT (+150đ)">Giải Ba Quốc gia VH / KHKT (+150đ/giải)</option>
+              <option value="75|Giải KK Quốc gia VH / KHKT (+75đ)">Giải KK Quốc gia VH / KHKT (+75đ/giải)</option>
+            </optgroup>
+
+            <optgroup label="CỘNG: 4. BỒI DƯỠNG HSG & KHKT CẤP TỈNH">
+              <option value="250|Giải Nhất cấp tỉnh VH / KHKT (+250đ)">Giải Nhất cấp tỉnh VH / KHKT (+250đ/giải)</option>
+              <option value="160|Giải Nhì cấp tỉnh VH / KHKT (+160đ)">Giải Nhì cấp tỉnh VH / KHKT (+160đ/giải)</option>
+              <option value="100|Giải Ba cấp tỉnh VH / KHKT (+100đ)">Giải Ba cấp tỉnh VH / KHKT (+100đ/giải)</option>
+              <option value="50|Giải KK cấp tỉnh VH / KHKT (+50đ)">Giải KK cấp tỉnh VH / KHKT (+50đ/giải)</option>
+              <option value="30|Dự thi HSG/KHKT tỉnh không giải (+30đ)">Dự thi HSG/KHKT tỉnh không giải (+30đ)</option>
+            </optgroup>
+
+            <optgroup label="CỘNG: 5. BỒI DƯỠNG HSG VĂN HÓA & KHKT CẤP CƠ SỞ">
+              <option value="4.5|Hướng dẫn dự án KHKT cấp cơ sở (+4.5đ/dự án)">Hướng dẫn dự án KHKT cấp cơ sở (+4.5đ/dự án)</option>
+              <option value="37.5|Giải Nhất HSG Văn hóa cấp cơ sở (+37.5đ)">Giải Nhất HSG Văn hóa cấp cơ sở (+37.5đ)</option>
+              <option value="24|Giải Nhì HSG Văn hóa cấp cơ sở (+24đ)">Giải Nhì HSG Văn hóa cấp cơ sở (+24đ)</option>
+              <option value="15|Giải Ba HSG Văn hóa cấp cơ sở (+15đ)">Giải Ba HSG Văn hóa cấp cơ sở (+15đ)</option>
+              <option value="7.5|Giải KK HSG Văn hóa cấp cơ sở (+7.5đ)">Giải KK HSG Văn hóa cấp cơ sở (+7.5đ)</option>
+            </optgroup>
+
+            <optgroup label="CỘNG: 6. TIN HỌC TRẺ, HKPĐ, QPAN, ĐẠI SỨ VH ĐỌC">
+              <option value="120|Đại sứ VH đọc tiêu biểu xuất sắc (+120đ)">Đại sứ VH đọc tiêu biểu xuất sắc (+120đ)</option>
+              <option value="100|Đại sứ VH đọc tiêu biểu (+100đ)">Đại sứ VH đọc tiêu biểu (+100đ)</option>
+              <option value="100|Giải tập thể nhiều thí sinh tham gia ĐS VHĐ (+100đ)">Giải tập thể nhiều thí sinh ĐS VHĐ (+100đ)</option>
+              <option value="80|Giải Nhất tỉnh Tin học trẻ/TNTH/ĐSVHĐ (+80đ)">Giải Nhất tỉnh Tin học trẻ/TNTH/ĐSVHĐ (+80đ)</option>
+              <option value="60|Giải Nhì tỉnh Tin học trẻ/TNTH/ĐSVHĐ (+60đ)">Giải Nhì tỉnh Tin học trẻ/TNTH/ĐSVHĐ (+60đ)</option>
+              <option value="50|Giải Ba tỉnh Tin học trẻ/TNTH/ĐSVHĐ (+50đ)">Giải Ba tỉnh Tin học trẻ/TNTH/ĐSVHĐ (+50đ)</option>
+              <option value="30|Giải KK tỉnh Tin học trẻ/TNTH/ĐSVHĐ (+30đ)">Giải KK tỉnh Tin học trẻ/TNTH/ĐSVHĐ (+30đ)</option>
+              <option value="187.5|Giải Nhất Quốc gia HKPĐ/QPAN (+187.5đ)">Giải Nhất Quốc gia HKPĐ/QPAN (+187.5đ)</option>
+              <option value="120|Giải Nhì Quốc gia HKPĐ/QPAN (+120đ)">Giải Nhì Quốc gia HKPĐ/QPAN (+120đ)</option>
+              <option value="75|Giải Ba Quốc gia HKPĐ/QPAN (+75đ)">Giải Ba Quốc gia HKPĐ/QPAN (+75đ)</option>
+              <option value="37.5|Giải KK Quốc gia HKPĐ/QPAN (+37.5đ)">Giải KK Quốc gia HKPĐ/QPAN (+37.5đ)</option>
+              <option value="125|Giải Nhất tỉnh HKPĐ/QPAN/TT (+125đ)">Giải Nhất tỉnh HKPĐ/QPAN (+125đ)</option>
+              <option value="80|Giải Nhì tỉnh HKPĐ/QPAN/TT (+80đ)">Giải Nhì tỉnh HKPĐ/QPAN (+80đ)</option>
+              <option value="50|Giải Ba tỉnh HKPĐ/QPAN/TT (+50đ)">Giải Ba tỉnh HKPĐ/QPAN (+50đ)</option>
+              <option value="25|Giải KK tỉnh HKPĐ/QPAN/TT (+25đ)">Giải KK tỉnh HKPĐ/QPAN (+25đ)</option>
+              <option value="5|HKPĐ dự thi cấp tỉnh không giải (+5đ/phân môn)">HKPĐ tỉnh không giải (+5đ/phân môn)</option>
+              <option value="60|Giải Nhất cuộc thi HS khác cấp tỉnh (+60đ)">Giải Nhất cuộc thi HS khác (+60đ)</option>
+              <option value="45|Giải Nhì cuộc thi HS khác cấp tỉnh (+45đ)">Giải Nhì cuộc thi HS khác (+45đ)</option>
+              <option value="35|Giải Ba cuộc thi HS khác cấp tỉnh (+35đ)">Giải Ba cuộc thi HS khác (+35đ)</option>
+              <option value="20|Giải KK cuộc thi HS khác cấp tỉnh (+20đ)">Giải KK cuộc thi HS khác (+20đ)</option>
+            </optgroup>
+
+            <optgroup label="CỘNG: 7. KHỞI NGHIỆP, STTTNND, E-LEARNING">
+              <option value="3|Nộp ý tưởng khởi nghiệp về Sở (+3đ)">Nộp ý tưởng khởi nghiệp về Sở (+3đ)</option>
+              <option value="100|Nhất tỉnh/QG ý tưởng khởi nghiệp / STTTNND (+100đ)">Nhất tỉnh/QG Khởi nghiệp / STTTNND (+100đ)</option>
+              <option value="80|Nhì tỉnh ý tưởng khởi nghiệp / STTTNND (+80đ)">Nhì tỉnh Khởi nghiệp / STTTNND (+80đ)</option>
+              <option value="70|Ba tỉnh ý tưởng khởi nghiệp / STTTNND (+70đ)">Ba tỉnh Khởi nghiệp / STTTNND (+70đ)</option>
+              <option value="50|KK tỉnh ý tưởng khởi nghiệp / STTTNND (+50đ)">KK tỉnh Khởi nghiệp / STTTNND (+50đ)</option>
+              <option value="60|Giải Nhất thi dạy học tích hợp/E-learning (+60đ)">Giải Nhất thi dạy học tích hợp/E-learning (+60đ)</option>
+              <option value="50|Giải Nhì thi dạy học tích hợp/E-learning (+50đ)">Giải Nhì thi dạy học tích hợp/E-learning (+50đ)</option>
+              <option value="40|Giải Ba thi dạy học tích hợp/E-learning (+40đ)">Giải Ba thi dạy học tích hợp/E-learning (+40đ)</option>
+              <option value="30|Giải KK thi dạy học tích hợp/E-learning (+30đ)">Giải KK thi dạy học tích hợp/E-learning (+30đ)</option>
+              <option value="5|Sản phẩm E-learning tham gia tỉnh/QG (+5đ)">Sản phẩm E-learning tham gia tỉnh/QG (+5đ)</option>
+            </optgroup>
+
+            <optgroup label="CỘNG: 8. SÁNG KIẾN KINH NGHIỆM, STKT & NCKH">
+              <option value="5|Có nộp sáng kiến cấp trường (+5đ)">Có nộp sáng kiến cấp trường (+5đ)</option>
+              <option value="15|Đạt sáng kiến cấp trường (+15đ)">Đạt sáng kiến cấp trường (+15đ)</option>
+              <option value="100|Đạt sáng kiến cấp ngành / cơ sở (+100đ)">Đạt sáng kiến cấp ngành / cơ sở (+100đ)</option>
+              <option value="150|Đạt SKKN cấp tỉnh / STKT giải Ba trở lên (+150đ)">SKKN cấp tỉnh / STKT giải Ba trở lên (+150đ)</option>
+              <option value="50|Giải pháp STKT cấp tỉnh đạt giải (+50đ)">Giải pháp STKT cấp tỉnh đạt giải (+50đ)</option>
+              <option value="15|GV có dự án tham gia STKT cấp tỉnh (+15đ)">GV có dự án STKT tham gia cấp tỉnh (+15đ)</option>
+              <option value="15|Có nộp đề tài NCKH cấp ngành/tỉnh (+15đ)">Có nộp đề tài NCKH cấp ngành/tỉnh (+15đ)</option>
+              <option value="100|Đề tài NCKH bảo vệ thành công (+100đ)">Đề tài NCKH bảo vệ thành công (+100đ)</option>
+            </optgroup>
+
+            <optgroup label="CỘNG: 9. KHẢO THÍ, BGK & HỘI ĐỒNG">
+              <option value="3|Ra đề thi thử ĐH / luyện đề TN THPT (+3đ)">Ra đề thi thử ĐH/luyện đề TN THPT (+3đ)</option>
+              <option value="3|Giám khảo KHKT cấp trường (+3đ)">Ban giám khảo KHKT cấp trường (+3đ/lần)</option>
+              <option value="2|Trọng tài/BGK TDTT, VHVN trường (+2đ)">Trọng tài/BGK TDTT, VHVN (+2đ/lần, tối đa 10đ/kỳ)</option>
+              <option value="2|Hỗ trợ TDTT giữa giờ (+2đ)">Hỗ trợ tập luyện TDTT giữa giờ (+2đ/hoạt động)</option>
+              <option value="5|BGK cấp Tỉnh / Sở triệu tập (+5đ)">BGK cấp Tỉnh / Sở triệu tập (+5đ/đợt)</option>
+            </optgroup>
+
+            <optgroup label="CỘNG: 10. ĐOÀN THANH NIÊN, CLB & ĐẢNG">
+              <option value="200|Bí thư Đoàn trường (Tối đa +200đ)">Bí thư Đoàn trường (Tối đa +200đ/năm)</option>
+              <option value="100|Phó Bí thư Đoàn trường (Tối đa +100đ)">Phó Bí thư Đoàn trường (Tối đa +100đ/năm)</option>
+              <option value="50|BTV Đoàn trường (Tối đa +50đ)">BTV Đoàn trường (Tối đa +50đ/năm)</option>
+              <option value="30|BCH Đoàn trường (Tối đa +30đ)">BCH Đoàn trường (Tối đa +30đ/năm)</option>
+              <option value="20|Tổ chức ngoại khóa (+20đ chia đều)">Tổ chức ngoại khóa (+20đ chia đều số người)</option>
+              <option value="15|Hiến máu nhân đạo (+15đ)">Hiến máu nhân đạo (+15đ/lần)</option>
+              <option value="5|Việc đột xuất do Đoàn thể giao (+5đ)">Việc đột xuất Đoàn thể (Tối đa +5đ/lần)</option>
+              <option value="2|Tham gia việc đột xuất nhiều ngày (+2đ)">Việc đột xuất nhiều ngày (+2đ/lần, max +6đ/tháng)</option>
+              <option value="2|CLB Tiếng Anh / Sách & Hành động (+2đ/tháng)">CLB Tiếng Anh / Sách & Hành động (+2đ/tháng)</option>
+              <option value="20|BCN CLB hoàn thành xuất sắc (+20đ)">BCN CLB hoàn thành xuất sắc (+20đ/năm)</option>
+              <option value="15|BCN CLB hoàn thành tốt (+15đ)">BCN CLB hoàn thành tốt (+15đ/năm)</option>
+              <option value="80|Chi ủy viên hoàn thành nhiệm vụ (Tối đa +80đ)">Chi ủy viên (Tối đa +80đ/năm)</option>
+              <option value="5|Đảng viên hoàn thành xuất sắc nhiệm vụ (+5đ)">Đảng viên HTXSNV (+5đ)</option>
+            </optgroup>
+
+            <optgroup label="CỘNG: 11. PHONG TRÀO, CUỘC THI GV & KIÊM NHIỆM">
+              <option value="40|Giải Nhất cuộc thi khác của GV cấp Sở/Phường (+40đ)">Giải Nhất cuộc thi khác của GV cấp Sở/Phường (+40đ)</option>
+              <option value="30|Giải Nhì cuộc thi khác của GV cấp Sở/Phường (+30đ)">Giải Nhì cuộc thi khác của GV cấp Sở/Phường (+30đ)</option>
+              <option value="20|Giải Ba cuộc thi khác của GV cấp Sở/Phường (+20đ)">Giải Ba cuộc thi khác của GV cấp Sở/Phường (+20đ)</option>
+              <option value="10|Giải KK cuộc thi khác của GV cấp Sở/Phường (+10đ)">Giải KK cuộc thi khác của GV cấp Sở/Phường (+10đ)</option>
+              <option value="40|Giải Nhất viết bài dự thi cấp trên (+40đ)">Giải Nhất viết bài dự thi (+40đ)</option>
+              <option value="30|Giải Nhì viết bài dự thi cấp trên (+30đ)">Giải Nhì viết bài dự thi (+30đ)</option>
+              <option value="20|Giải Ba viết bài dự thi cấp trên (+20đ)">Giải Ba viết bài dự thi (+20đ)</option>
+              <option value="15|Giải KK viết bài dự thi cấp trên (+15đ)">Giải KK viết bài dự thi (+15đ)</option>
+              <option value="10|Tham gia viết bài dự thi cấp trên (+10đ)">Tham gia viết bài dự thi (+10đ)</option>
+              <option value="15|Giải Nhất thi TDTT/VHVN tỉnh (+15đ)">Giải Nhất TDTT/VHVN tỉnh (+15đ)</option>
+              <option value="12|Giải Nhì thi TDTT/VHVN tỉnh (+12đ)">Giải Nhì TDTT/VHVN tỉnh (+12đ)</option>
+              <option value="10|Giải Ba thi TDTT/VHVN tỉnh (+10đ)">Giải Ba TDTT/VHVN tỉnh (+10đ)</option>
+              <option value="8|Giải KK thi TDTT/VHVN tỉnh (+8đ)">Giải KK TDTT/VHVN tỉnh (+8đ)</option>
+              <option value="5|Tham gia thi TDTT/VHVN tỉnh không giải (+5đ)">Tham gia TDTT/VHVN tỉnh không giải (+5đ)</option>
+              <option value="7.5|Giải Nhất thi TDTT/VHVN phường/xã (+7.5đ)">Giải Nhất TDTT/VHVN phường/xã (+7.5đ)</option>
+              <option value="6|Giải Nhì thi TDTT/VHVN phường/xã (+6đ)">Giải Nhì TDTT/VHVN phường/xã (+6đ)</option>
+              <option value="5|Giải Ba thi TDTT/VHVN phường/xã (+5đ)">Giải Ba TDTT/VHVN phường/xã (+5đ)</option>
+              <option value="4|Giải KK thi TDTT/VHVN phường/xã (+4đ)">Giải KK TDTT/VHVN phường/xã (+4đ)</option>
+              <option value="80|Tổ trưởng CM đạt LĐXS (Tối đa +80đ)">Tổ trưởng CM đạt LĐXS (Tối đa +80đ/năm)</option>
+              <option value="60|Tổ trưởng CM đạt LĐTT (Tối đa +60đ)">Tổ trưởng CM đạt LĐTT (Tối đa +60đ/năm)</option>
+              <option value="30|Tổ trưởng CM đạt HTNV (+30đ)">Tổ trưởng CM đạt HTNV (+30đ/năm)</option>
+              <option value="40|Tổ phó CM hưởng 50% TTCM (Tối đa +40đ)">Tổ phó CM (Tối đa +40đ/năm)</option>
+              <option value="10|Tổ phó tổ CN đạt HTTNV trở lên (+10đ)">Tổ phó tổ CN HTTNV (+10đ/kỳ)</option>
+              <option value="5|Tổ phó tổ CN đạt HTNV (+5đ)">Tổ phó tổ CN HTNV (+5đ/kỳ)</option>
+              <option value="90|GVCN lớp Tiên tiến xuất sắc (+90đ)">GVCN lớp TTXS (+90đ/năm)</option>
+              <option value="80|GVCN lớp Tiên tiến (+80đ)">GVCN lớp Tiên tiến (+80đ/năm)</option>
+              <option value="70|GVCN lớp Khá (+70đ)">GVCN lớp Khá (+70đ/năm)</option>
+              <option value="60|GVCN lớp còn lại (+60đ)">GVCN lớp còn lại (+60đ/năm)</option>
+              <option value="35|Thư ký HĐSP / Thư ký liên tịch (+35đ)">Thư ký HĐSP/Liên tịch (+35đ/năm)</option>
+              <option value="80|Xếp TKB / Quản trị Website (Tối đa +80đ)">Xếp TKB / Website (Tối đa +80đ/năm)</option>
+            </optgroup>
+
+            <optgroup label="TRỪ: 12. KỶ LUẬT, TÁC PHONG & HỘI HỌP">
+              <option value="-5|Không đóng quỹ/rượu bia/thuốc lá/ATGT (-5đ)">Vi phạm nề nếp/rượu/thuốc lá/ATGT (-5đ/lần)</option>
+              <option value="-5|Gây mất đoàn kết, chấm điểm thiếu công bằng (-5đ)">Mất đoàn kết / chấm điểm thiếu công bằng (-5đ/lần)</option>
+              <option value="-5|Bị phản ánh về lối sống hoặc giảng dạy (-5đ)">Bị phản ánh lối sống/dạy học có minh chứng (-5đ/lần)</option>
+              <option value="-1|Họp cơ quan/tập thể muộn >5 phút (-1đ)">Đi họp muộn >5 phút (-1đ/lần)</option>
+              <option value="-2|Nghỉ họp tổ/SHCM/HĐ/từ chối nhiệm vụ có lý do (-2đ)">Nghỉ họp/từ chối nhiệm vụ có lý do chính đáng (-2đ/buổi)</option>
+              <option value="-5|Nghỉ họp không phép/SHCM/từ chối nhiệm vụ (-5đ)">Nghỉ họp không phép/SHCM/từ chối nhiệm vụ (-5đ/buổi)</option>
+              <option value="-2|Vắng hoạt động tập thể có phép theo luật LĐ (-2đ)">Vắng hoạt động tập thể có phép theo luật LĐ (-2đ/lần)</option>
+              <option value="-5|Vắng hoạt động tập thể không phép (-5đ)">Vắng hoạt động tập thể không phép (-5đ/lần)</option>
+              <option value="-1|Nhắc nhở tác phong, nề nếp, đồng phục, thẻ, để xe (-1đ)">Nhắc nhở tác phong, đồng phục, thẻ, để xe (-1đ/lần)</option>
+              <option value="-1|Họp bị nhắc trật tự, đi lại, điện thoại (-1đ)">Họp bị nhắc trật tự/điện thoại (-1đ/lần)</option>
+              <option value="-5|Họp bị nhắc trật tự/điện thoại từ lần 2 (-5đ)">Họp bị nhắc từ lần 2 trở đi (-5đ/buổi)</option>
+              <option value="-3|Đủ ĐK nhưng không đăng ký thi GVG tỉnh V1 (-3đ)">Không đăng ký thi GVG tỉnh V1 (<=50 tuổi) (-3đ)</option>
+            </optgroup>
+
+            <optgroup label="TRỪ: 13. GIỜ DẠY, NỀN NẾP LỚP & CHUYÊN MÔN">
+              <option value="-3|Tự ý đổi giờ dạy (-3đ)">Tự ý đổi giờ dạy (-3đ/tiết/GV)</option>
+              <option value="-1|Nghỉ dạy việc riêng (-1đ)">Nghỉ dạy việc riêng (-1đ/tiết)</option>
+              <option value="-3|Việc riêng, dùng điện thoại trong giờ dạy/coi thi (-3đ)">Việc riêng/dùng điện thoại giờ dạy/coi thi (-3đ/tiết)</option>
+              <option value="-2|Không quản lý nền nếp, để HS làm việc riêng (-2đ)">Để HS làm việc riêng trong giờ (-2đ/lần/lớp)</option>
+              <option value="-3|Quên giờ do xếp TKB/việc gia đình hệ trọng (<15p) (-3đ)">Quên giờ do xếp TKB/việc gia đình hệ trọng (-3đ/tiết)</option>
+              <option value="-3|Lên lớp muộn / ra sớm dưới 5 phút (-3đ)">Lên lớp muộn/ra sớm <5 phút (-3đ/tiết)</option>
+              <option value="-5|Lên lớp muộn / ra sớm 5 đến 10 phút (-5đ)">Lên lớp muộn/ra sớm 5-10 phút (-5đ/tiết)</option>
+              <option value="-8|Lên lớp muộn / ra sớm 10 đến 15 phút (-8đ)">Lên lớp muộn/ra sớm 10-15 phút (-8đ/tiết)</option>
+              <option value="-10|Bỏ tiết, bỏ giờ, bỏ SHTT không có lý do chính đáng (-10đ)">Bỏ giờ/bỏ tiết/SHTT không có lý do chính đáng (-10đ/tiết)</option>
+              <option value="-10|Dạy ôn TN tự ý cho HS nghỉ không báo cáo (-10đ)">Dạy ôn TN tự ý cho HS nghỉ (-10đ/tiết)</option>
+              <option value="-5|Bỏ soạn bài hoặc soạn/dạy sai PPCT (-5đ)">Bỏ soạn / soạn sai PPCT (-5đ/tiết/lần)</option>
+              <option value="-5|Nộp giáo án không đúng tiến độ (-5đ)">Nộp giáo án muộn tiến độ (-5đ/lần)</option>
+              <option value="-1|Nộp giáo án file Word thay vì PDF (-1đ)">Nộp giáo án file Word (-1đ)</option>
+              <option value="-1|Giáo án thiếu chữ ký duyệt của TCM (-1đ)">Giáo án thiếu ký duyệt TCM (-1đ)</option>
+              <option value="-1|Không dự giờ có lý do (-1đ)">Không dự giờ có lý do (-1đ/tiết)</option>
+              <option value="-2|Không dự giờ không lý do (-2đ)">Không dự giờ không lý do (-2đ/tiết)</option>
+              <option value="-3|Giờ dạy Hội giảng/SHCM loại Yếu (-3đ)">Giờ dạy Hội giảng/SHCM loại Yếu (-3đ/giờ)</option>
+              <option value="-5|Điểm thi TN THPT chưa đảm bảo chất lượng (-5đ)">Điểm thi TN môn phụ trách chưa đạt (-5đ)</option>
+            </optgroup>
+
+            <optgroup label="TRỪ: 14. SỔ SÁCH, CSDL, OLM & ĐỀ THI">
+              <option value="-2|Hồ sơ chuyên môn loại Yếu (-2đ)">Hồ sơ chuyên môn loại Yếu (-2đ/lần)</option>
+              <option value="-3|Không nộp hồ sơ, báo cáo đúng hạn (-3đ)">Không nộp hồ sơ/báo cáo đúng hạn (-3đ/lần/loại)</option>
+              <option value="-3|Tổng hợp số liệu báo cáo sai (-3đ)">Tổng hợp số liệu báo cáo sai (-3đ/lần)</option>
+              <option value="-2|Bị nhắc sổ đầu bài chính khóa/ôn TN (-2đ)">Bị nhắc sổ đầu bài (-2đ/lỗi/loại sổ)</option>
+              <option value="-1|Lỗi báo giảng trên phần mềm CSDL (-1đ)">Lỗi báo giảng trên CSDL (-1đ/lỗi)</option>
+              <option value="-2|Không vào điểm theo tiến độ (-2đ)">Không vào điểm theo tiến độ (-2đ/lần/lớp)</option>
+              <option value="-2|Cập nhật điểm sai quy chế trong sổ/học bạ (-2đ)">Cập nhật điểm sai quy chế (-2đ/lỗi)</option>
+              <option value="-1|Sửa điểm CSDL nhiều (-1đ)">Sửa điểm CSDL nhiều (-1đ/lỗi/lớp/kỳ)</option>
+              <option value="-10|Vào điểm CSDL sai cả cột (-10đ)">Vào điểm CSDL sai cả cột (-10đ/lớp/đợt)</option>
+              <option value="-3|Thay sổ điểm (-3đ)">Thay sổ điểm (-3đ)</option>
+              <option value="-0.5|Không đưa đề lên OLM theo yêu cầu (-0.5đ)">Không đưa đề lên OLM (-0.5đ/đề)</option>
+              <option value="-2|Không nộp đề/HD chấm đúng hạn, ra đề sai (-2đ)">Không nộp đề đúng hạn/ra đề sai (-2đ/lần/đề)</option>
+              <option value="-1|Bị nhắc sổ điểm/học bạ/điểm danh (-1đ)">Bị nhắc sổ điểm/học bạ/điểm danh (-1đ/lần)</option>
+              <option value="-2|Bị nhắc hoàn thành tổng kết điểm, học bạ (-2đ)">Bị nhắc tổng kết điểm/học bạ (-2đ/lần/loại)</option>
+            </optgroup>
+
+            <optgroup label="TRỪ: 15. COI THI & KHẢO THÍ">
+              <option value="-3|Làm việc riêng, dùng điện thoại khi coi thi (-3đ)">Dùng điện thoại khi coi thi (-3đ/tiết)</option>
+              <option value="-3|Coi thi đến muộn <5 phút (-3đ)">Coi thi đến muộn <5 phút (-3đ)</option>
+              <option value="-5|Coi thi đến muộn 5-10 phút (-5đ)">Coi thi đến muộn 5-10 phút (-5đ)</option>
+              <option value="-8|Coi thi đến muộn 10-15 phút (-8đ)">Coi thi đến muộn 10-15 phút (-8đ)</option>
+              <option value="-10|Coi thi muộn >15 phút / Bỏ coi thi (-10đ)">Bỏ coi thi / muộn >15 phút (-10đ)</option>
+              <option value="-1|Coi thi về sớm <15 phút có phép (-1đ)">Coi thi về sớm <15 phút có phép (-1đ/lần)</option>
+              <option value="-5|Bỏ coi kiểm tra/coi thi ra ngoài việc riêng 5-10p (-5đ)">Bỏ coi thi/ra ngoài việc riêng 5-10p (-5đ/lần)</option>
+              <option value="-10|Bỏ coi kiểm tra/coi thi ra ngoài việc riêng >10p (-10đ)">Bỏ coi thi/ra ngoài việc riêng >10p (-10đ/lần)</option>
+              <option value="-1|Lỗi phòng thi: SBD, mã đề, chữ ký, xếp bài (-1đ)">Lỗi ghi SBD/mã đề/chữ ký hồ sơ thi (-1đ/lỗi)</option>
+              <option value="-5|Làm mất bài, không thu bài thi (-5đ)">Làm mất bài/không thu bài thi (-5đ/bài)</option>
+              <option value="-2|Lỗi mất bài đã khắc phục kịp thời (-2đ)">Lỗi mất bài đã khắc phục (-2đ/bài)</option>
+              <option value="-20|Làm thi TN THPT, Tuyển sinh bị phê bình (-20đ)">Làm thi TN/Tuyển sinh bị phê bình (-20đ/lần)</option>
+            </optgroup>
+
+            <optgroup label="TRỪ: 16. CHỦ NHIỆM, QUẢN LÝ, ĐẢNG & BDTX">
+              <option value="-1|GVCN không hoàn thành điểm danh CSDL tuần (-1đ)">GVCN không điểm danh CSDL tuần (-1đ/lỗi)</option>
+              <option value="-1|Lỗi điều hành công tác chủ nhiệm (-1đ)">Lỗi điều hành công tác chủ nhiệm (-1đ/lỗi)</option>
+              <option value="-2|Hồ sơ chủ nhiệm Yếu / bị nhắc sổ sách (-2đ)">Hồ sơ chủ nhiệm Yếu / bị nhắc (-2đ/lần)</option>
+              <option value="-5|GVCN vắng chào cờ/lao động không phép (-5đ)">GVCN vắng chào cờ không phép (-5đ/lần)</option>
+              <option value="-1|GVCN muộn chào cờ/lao động <5 phút (-1đ)">GVCN muộn chào cờ <5 phút (-1đ/lần)</option>
+              <option value="-2|GVCN muộn chào cờ/lao động 5-10 phút (-2đ)">GVCN muộn chào cờ 5-10 phút (-2đ/lần)</option>
+              <option value="-3|GVCN muộn chào cờ/lao động 10-15 phút (-3đ)">GVCN muộn chào cờ 10-15 phút (-3đ/lần)</option>
+              <option value="-5|GVCN muộn chào cờ/lao động >15 phút (-5đ)">GVCN muộn chào cờ >15 phút (-5đ/lần)</option>
+              <option value="-3|Lỗi điều hành của TTCM, Đoàn thể (-3đ)">Lỗi điều hành TTCM/Đoàn thể (-3đ/lần)</option>
+              <option value="-1|Lỗi điều hành của Tổ phó (-1đ)">Lỗi điều hành Tổ phó (-1đ/lần)</option>
+              <option value="-5|Đảng viên vi phạm quy định / điều không được làm (-5đ)">Đảng viên vi phạm quy định (-5đ/lần)</option>
+              <option value="-3|Chi ủy viên: Chi bộ đạt HTNV (-3đ)">Chi ủy viên: Chi bộ HTNV (-3đ)</option>
+              <option value="-5|Chi ủy viên: Chi bộ không HTNV (-5đ)">Chi ủy viên: Chi bộ không HTNV (-5đ)</option>
+              <option value="-2|BDTX / TEMIS bị nhà trường nhắc (-2đ)">BDTX / TEMIS bị trường nhắc (-2đ/lần)</option>
+              <option value="-3|BDTX / TEMIS bị Sở nhắc (-3đ)">BDTX / TEMIS bị Sở nhắc (-3đ/lần)</option>
+              <option value="-4|BDTX / TEMIS bị Sở phê bình văn bản (-4đ)">BDTX / TEMIS bị Sở phê bình (-4đ/lần)</option>
+            </optgroup>
+          </select>
+
+          <div class="input-row">
+            <input type="number" step="0.25" id="inpScore" placeholder="Số điểm (+/-)" style="width: 130px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:13px; font-weight:600; color:#334155; white-space:nowrap;">Số lượng:</span>
+              <input type="number" min="1" step="1" id="inpQty" value="1" oninput="multiplyQty()" style="width: 72px; text-align:center; font-weight:700;">
+            </div>
+            <input type="text" id="inpNote" placeholder="Nội dung minh chứng..." style="flex: 1;">
+          </div>
+
+          <label class="checkbox-box">
+            <input type="checkbox" id="doublePenalty" onchange="toggleDouble()"> 
+            Bị nhắc nhở nhưng vẫn tái phạm từ lần 2 trở đi (nhân đôi điểm trừ)
+          </label>
+
+          <button class="btn-save" id="btnSaveEntry" onclick="addEntry()" style="margin-top: 4px;">💾 Lưu điểm vào hệ thống</button>
+        </div>
+      </div>
+
+      <div style="font-weight: 700; font-size: 14px; margin: 0 0 8px; color: #1e293b;">Chi tiết biến động trong tháng:</div>
+      <div id="entryLogs"></div>
+
+      <!-- XUẤT BÁO CÁO CÁ NHÂN -->
+      <div class="export-box">
+        <div style="font-weight: 600; color: #1e293b; font-size: 13.5px;">Phiếu minh chứng cá nhân</div>
+        <button class="btn-print" onclick="printPersonalReport()">🖨 In phiếu / Xuất PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAB 2: BẢNG TỔNG HỢP ĐIỂM TỔ ================= -->
+  <div id="panelTeam" style="display:none;">
+    <div class="filter-bar">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <label style="font-weight:700; font-size:13.5px;">Kỳ thống kê:</label>
+        <select id="teamPeriod" onchange="renderTeamTable()">
+          <option value="T9">Tháng 9</option>
+          <option value="T10">Tháng 10</option>
+          <option value="T11" selected>Tháng 11</option>
+          <option value="T12">Tháng 12</option>
+          <option value="T1">Tháng 1</option>
+          <option value="T2">Tháng 2</option>
+          <option value="T3">Tháng 3</option>
+          <option value="T4">Tháng 4</option>
+          <option value="T5">Tháng 5</option>
+          <option value="HK1">Học kỳ 1 (T9 – T12)</option>
+          <option value="HK2">Học kỳ 2 (T1 – T5)</option>
+          <option value="ALL">Cả năm học (T9 – T5)</option>
+        </select>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn-ref" id="btnRefresh" onclick="loadFromSheets(true)">🔄 Làm mới</button>
+        <button class="btn-excel" onclick="exportOfficialExcel()">📥 Xuất Excel</button>
+      </div>
+    </div>
+
+    <div class="status-strip" id="teamStatusStrip">Đang tải tiến độ...</div>
+
+    <div style="overflow-x:auto;">
+      <table class="team-table">
+        <thead>
+          <tr>
+            <th style="width:6%">TT</th>
+            <th style="width:24%; text-align:left;">Họ và tên giáo viên</th>
+            <th style="width:11%">Môn</th>
+            <th style="width:14%">Tổng điểm cộng<br><small style="font-weight:400;">(Quỹ + Thưởng)</small></th>
+            <th style="width:12%">Tổng điểm trừ</th>
+            <th style="width:12%">Tổng điểm</th>
+            <th style="width:11%">Trạng thái</th>
+            <th style="width:10%">Chi tiết</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyTeam">
+          <tr><td colspan="8" style="padding:24px; color:#64748b;">Đang tải dữ liệu...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- KHUNG IN BÁO CÁO A4 -->
+<div id="printReportArea"></div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbySKG5qZz2o6wj4UesopvIRsSCGvODebVEFjlCW24KUjPTh8qE1mkVBPpJ70or0vtwu0g/exec";
+
+  const months = [
+    { id: "T9", num: "09", label: "Tháng 9" }, { id: "T10", num: "10", label: "Tháng 10" },
+    { id: "T11", num: "11", label: "Tháng 11" }, { id: "T12", num: "12", label: "Tháng 12" },
+    { id: "T1", num: "01", label: "Tháng 1" }, { id: "T2", num: "02", label: "Tháng 2" },
+    { id: "T3", num: "03", label: "Tháng 3" }, { id: "T4", num: "04", label: "Tháng 4" },
+    { id: "T5", num: "05", label: "Tháng 5" }
+  ];
+
+  let STATE = { tenTo: "TỔ XÃ HỘI", namHoc: "2026-2027", members: [], logs: [] };
+  let currentM = "T11";
+
+  window.onload = () => loadFromSheets(false);
+
+  function switchTab(tab) {
+    document.getElementById('panelDetail').style.display = (tab === 'detail') ? 'block' : 'none';
+    document.getElementById('panelTeam').style.display = (tab === 'team') ? 'block' : 'none';
+    document.getElementById('tabBtnDetail').classList.toggle('active', tab === 'detail');
+    document.getElementById('tabBtnTeam').classList.toggle('active', tab === 'team');
+    if (tab === 'team') renderTeamTable();
+    else onMemberChange();
+  }
+
+  function viewMemberDetail(hoTen) {
+    document.getElementById('selMember').value = hoTen;
+    localStorage.setItem('yd3_txh_selected_gv', hoTen);
+    const p = document.getElementById('teamPeriod').value;
+    if (months.some(m => m.id === p)) currentM = p;
+    switchTab('detail');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function postApi(obj) {
+    const r = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(obj)
+    });
+    return await r.json();
+  }
+
+  async function loadFromSheets(isManual) {
+    const btn = document.getElementById('btnRefresh');
+    if (isManual && btn) { btn.disabled = true; btn.innerText = "⏳ Đang tải..."; }
+    try {
+      const r = await fetch(API_URL + "?t=" + Date.now());
+      const res = await r.json();
+      if (!res || !res.members) {
+        alert("Chưa tải được danh sách giáo viên từ Google Sheets!");
+        return;
+      }
+      STATE = res;
+      document.getElementById('lblTenTo').innerText = `THI ĐUA ${STATE.tenTo.toUpperCase()} NĂM HỌC ${STATE.namHoc}`;
+
+      const savedGv = localStorage.getItem('yd3_txh_selected_gv') || "";
+      const sel = document.getElementById('selMember');
+      sel.innerHTML = `<option value="">-- Chọn họ và tên giáo viên --</option>` +
+        STATE.members.map(m =>
+          `<option value="${m.hoTen}">${m.hoTen}${m.nhiemVu ? ' (' + m.nhiemVu + ')' : ''}</option>`
+        ).join('');
+
+      if (savedGv && STATE.members.some(m => m.hoTen === savedGv)) {
+        sel.value = savedGv;
+      }
+
+      onMemberChange();
+      renderTeamTable();
+    } catch (e) {
+      alert("Lỗi kết nối dữ liệu: " + e.message);
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerText = "🔄 Làm mới"; }
+    }
+  }
+
+  function onMemberChange() {
+    const hoTen = document.getElementById('selMember').value;
+    if (!hoTen) {
+      document.getElementById('needSelectAlert').style.display = 'block';
+      document.getElementById('personalWorkspace').style.display = 'none';
+      return;
+    }
+    localStorage.setItem('yd3_txh_selected_gv', hoTen);
+    document.getElementById('needSelectAlert').style.display = 'none';
+    document.getElementById('personalWorkspace').style.display = 'block';
+    renderMonthCards();
+    updateDetailUI();
+  }
+
+  function renderTeamTable() {
+    const p = document.getElementById('teamPeriod').value;
+    let targetMonths = months.map(m => m.id);
+    if (p === 'HK1') targetMonths = ["T9", "T10", "T11", "T12"];
+    else if (p === 'HK2') targetMonths = ["T1", "T2", "T3", "T4", "T5"];
+    else if (p !== 'ALL') targetMonths = [p];
+
+    const baseFund = targetMonths.length * 100;
+    let hasInputCount = 0;
+
+    const rowsHtml = STATE.members.map((m, idx) => {
+      const mLogs = STATE.logs.filter(l => l.hoTen === m.hoTen && targetMonths.includes(l.thang));
+      if (mLogs.length > 0) hasInputCount++;
+
+      const plusOnly = Number(mLogs.filter(l => l.pts > 0).reduce((s, l) => s + l.pts, 0).toFixed(2));
+      const tongDiemCong = Number((baseFund + plusOnly).toFixed(2));
+      const tongDiemTru = Number(mLogs.filter(l => l.pts < 0).reduce((s, l) => s + Math.abs(l.pts), 0).toFixed(2));
+      const tongDiem = Number((tongDiemCong - tongDiemTru).toFixed(2));
+
+      const statusBadge = mLogs.length > 0
+        ? `<span class="badge-done">Đã chấm (${mLogs.length})</span>`
+        : `<span class="badge-base">Quỹ cơ sở</span>`;
+
+      return `<tr>
+        <td>${m.stt || (idx + 1)}</td>
+        <td style="text-align:left; font-weight:600;">${m.hoTen}</td>
+        <td>${m.nhiemVu || ''}</td>
+        <td style="color:#15803d; font-weight:700;">${tongDiemCong}</td>
+        <td style="color:#b91c1c; font-weight:700;">${tongDiemTru}</td>
+        <td style="color:#0369a1; font-weight:800; font-size:15px;">${tongDiem}</td>
+        <td>${statusBadge}</td>
+        <td><button type="button" onclick="viewMemberDetail('${m.hoTen.replace(/'/g, "\\'")}')" style="padding:4px 8px; font-size:12.5px; cursor:pointer; background:#e0f2fe; border:1px solid #7dd3fc; color:#0369a1; font-weight:600;">Xem / Sửa</button></td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('tbodyTeam').innerHTML = rowsHtml;
+    const pText = document.getElementById('teamPeriod').selectedOptions[0].text;
+    document.getElementById('teamStatusStrip').innerHTML =
+      `<b>Tiến độ ${pText}:</b> Đã có <b>${hasInputCount}/${STATE.members.length}</b> giáo viên nhập minh chứng cộng/trừ.`;
+  }
+
+  function renderMonthCards() {
+    const hoTen = document.getElementById('selMember').value;
+    const grid = document.getElementById('monthsGrid');
+    grid.innerHTML = months.map(m => {
+      const list = STATE.logs.filter(l => l.hoTen === hoTen && l.thang === m.id);
+      const delta = Number(list.reduce((sum, item) => sum + item.pts, 0).toFixed(2));
+      const score = Number((100 + delta).toFixed(2));
+      const badgeText = delta > 0 ? `+${delta}` : (delta < 0 ? `${delta}` : '0');
+      const badgeColor = delta > 0 ? 'var(--success)' : (delta < 0 ? 'var(--danger)' : '#94a3b8');
+
+      return `
+        <div class="month-card ${m.id === currentM ? 'active' : ''}" onclick="pickMonth('${m.id}')">
+          <div class="month-name">${m.label}</div>
+          <div class="month-pts">${score}</div>
+          <div class="month-badge" style="color: ${badgeColor};">${badgeText}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function pickMonth(mId) {
+    currentM = mId;
+    renderMonthCards();
+    updateDetailUI();
+  }
+
+  let BASE_PRESET_PTS = null;
+  let BASE_PRESET_NOTE = "";
+
+  function applyPreset() {
+    const sel = document.getElementById('presetSelect');
+    document.getElementById('doublePenalty').checked = false;
+    document.getElementById('inpQty').value = 1;
+    if (sel.value) {
+      const [pts, note] = sel.value.split('|');
+      BASE_PRESET_PTS = parseFloat(pts);
+      BASE_PRESET_NOTE = note;
+      document.getElementById('inpScore').value = BASE_PRESET_PTS;
+      document.getElementById('inpNote').value = BASE_PRESET_NOTE;
+    } else {
+      BASE_PRESET_PTS = null;
+      BASE_PRESET_NOTE = "";
+    }
+  }
+
+  function multiplyQty() {
+    const qty = Math.max(1, parseInt(document.getElementById('inpQty').value || "1", 10));
+    const isDouble = document.getElementById('doublePenalty').checked;
+    if (BASE_PRESET_PTS !== null && !isNaN(BASE_PRESET_PTS)) {
+      const mult = (isDouble && BASE_PRESET_PTS < 0) ? 2 : 1;
+      const totalPts = Number((BASE_PRESET_PTS * qty * mult).toFixed(2));
+      document.getElementById('inpScore').value = totalPts;
+      document.getElementById('inpNote').value = qty > 1
+        ? `${BASE_PRESET_NOTE} (×${qty})`
+        : BASE_PRESET_NOTE;
+    } else {
+      const curScore = parseFloat(document.getElementById('inpScore').value);
+      if (!isNaN(curScore) && qty > 1) {
+        document.getElementById('inpScore').value = Number((curScore * qty).toFixed(2));
+      }
+    }
+  }
+
+  function toggleDouble() {
+    let p = parseFloat(document.getElementById('inpScore').value);
+    if (!isNaN(p) && p < 0) {
+      const isChecked = document.getElementById('doublePenalty').checked;
+      document.getElementById('inpScore').value = isChecked ? p * 2 : p / 2;
+    }
+  }
+
+  async function addEntry() {
+    const hoTen = document.getElementById('selMember').value;
+    if (!hoTen) return alert("Vui lòng chọn họ và tên giáo viên trước khi lưu!");
+    const p = parseFloat(document.getElementById('inpScore').value);
+    let n = document.getElementById('inpNote').value.trim();
+
+    if (isNaN(p) || !n) return alert("Vui lòng chọn tiêu chí hoặc điền số điểm và minh chứng!");
+    if (document.getElementById('doublePenalty').checked && !n.includes("Nhân đôi")) {
+      n += " [Tái phạm lần 2 - Nhân đôi điểm phạt]";
+    }
+
+    const btn = document.getElementById('btnSaveEntry');
+    btn.disabled = true; btn.innerText = "⏳ Đang lưu...";
+    try {
+      const res = await postApi({
+        action: "addEntry",
+        namHoc: STATE.namHoc,
+        hoTen: hoTen,
+        thang: currentM,
+        pts: p,
+        note: n
+      });
+      alert(res.msg);
+      if (res.success) {
+        BASE_PRESET_PTS = null;
+        BASE_PRESET_NOTE = "";
+        document.getElementById('inpScore').value = '';
+        document.getElementById('inpQty').value = '1';
+        document.getElementById('inpNote').value = '';
+        document.getElementById('presetSelect').value = '';
+        document.getElementById('doublePenalty').checked = false;
+        await loadFromSheets(false);
+      }
+    } catch (e) {
+      alert("Lỗi kết nối: " + e.message);
+    } finally {
+      btn.disabled = false; btn.innerText = "💾 Lưu điểm vào hệ thống";
+    }
+  }
+
+  function updateDetailUI() {
+    const hoTen = document.getElementById('selMember').value;
+    if (!hoTen) return;
+    const curObj = months.find(m => m.id === currentM);
+    document.getElementById('formMemberName').textContent = hoTen;
+    document.getElementById('currentMonthTitle').textContent = `Điểm ${curObj.label.toLowerCase()}`;
+    document.getElementById('formMonthLabel').textContent = curObj.label;
+
+    const alertBox = document.getElementById('closedMonthAlert');
+    if (currentM === 'T9' || currentM === 'T10') {
+      alertBox.style.display = 'block';
+      alertBox.innerHTML = `Lưu ý: <b>${curObj.label}</b> đã tổng hợp xong dữ liệu. Để chấm điểm mới, vui lòng chọn <b>Tháng 11</b>.`;
+    } else {
+      alertBox.style.display = 'none';
+    }
+
+    const curList = STATE.logs.filter(l => l.hoTen === hoTen && l.thang === currentM);
+    const curDelta = curList.reduce((s, e) => s + e.pts, 0);
+    document.getElementById('currentMonthScore').textContent = Number((100 + curDelta).toFixed(2));
+
+    let totalYear = 0;
+    months.forEach(m => {
+      const d = STATE.logs.filter(l => l.hoTen === hoTen && l.thang === m.id).reduce((s, e) => s + e.pts, 0);
+      totalYear += (100 + d);
+    });
+    document.getElementById('yearTotalScore').textContent = Number(totalYear.toFixed(2));
+
+    const logBox = document.getElementById('entryLogs');
+    if (curList.length === 0) {
+      logBox.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 18px;">${curObj.label} chưa có biến động điểm (quỹ ban đầu: 100 điểm)</div>`;
+      return;
+    }
+    logBox.innerHTML = curList.map(e => `
+      <div class="log-item">
+        <div>
+          <div style="font-weight: 500;">${e.note}</div>
+          <small style="color: #94a3b8;">${e.date}</small>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+          <b style="color: ${e.pts >= 0 ? 'var(--success)' : 'var(--danger)'}; font-size: 15px;">
+            ${e.pts >= 0 ? '+' : ''}${e.pts}
+          </b>
+          <button class="btn-del" title="Xóa" onclick="deleteEntry('${e.id}')">✕</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function deleteEntry(id) {
+    if (!confirm("Xóa mục minh chứng này khỏi hệ thống?")) return;
+    try {
+      const res = await postApi({ action: "deleteEntry", id: id });
+      alert(res.msg);
+      if (res.success) await loadFromSheets(false);
+    } catch (e) {
+      alert("Lỗi: " + e.message);
+    }
+  }
+
+  function applyTimesNewRomanStyles(ws, totalRows, totalCols, headerEndRow) {
+    const thinBorder = {
+      top: { style: "thin", color: { rgb: "000000" } },
+      bottom: { style: "thin", color: { rgb: "000000" } },
+      left: { style: "thin", color: { rgb: "000000" } },
+      right: { style: "thin", color: { rgb: "000000" } }
+    };
+
+    for (let r = 0; r < totalRows; r++) {
+      for (let c = 0; c < totalCols; c++) {
+        const addr = XLSX.utils.encode_cell({ r: r, c: c });
+        if (!ws[addr]) ws[addr] = { v: "", t: "s" };
+
+        const isTitle = r <= 2;
+        const isTableHeader = r >= 3 && r <= headerEndRow;
+        const valStr = String(ws[addr].v || "");
+        const isTotalRow = valStr === "Tổng" || (r > headerEndRow && ws[XLSX.utils.encode_cell({ r: r, c: 2 })]?.v === "Tổng");
+
+        ws[addr].s = {
+          font: {
+            name: "Times New Roman",
+            sz: isTitle ? (r === 0 ? 13 : 14) : 13,
+            bold: isTitle || isTableHeader || isTotalRow
+          },
+          alignment: {
+            vertical: "center",
+            horizontal: (isTitle || isTableHeader || c === 0 || c >= 2) ? "center" : "left",
+            wrapText: true
+          },
+          border: r >= 3 ? thinBorder : undefined
+        };
+
+        if (totalCols === 7 && r > headerEndRow && (c === 3 || c === 5)) {
+          ws[addr].s.alignment.horizontal = "left";
+        }
+      }
+    }
+  }
+
+  async function exportOfficialExcel() {
+    if (!STATE.members.length) return alert("Chưa có danh sách giáo viên!");
+    const ua = navigator.userAgent || "";
+    if (/Zalo/i.test(ua)) {
+      return alert("Vui lòng bấm dấu ba chấm (⋮) góc trên bên phải -> 'Mở bằng trình duyệt' (Chrome/Safari) rồi bấm Xuất Excel nhé!");
+    }
+
+    const p = document.getElementById('teamPeriod').value;
+    const wb = XLSX.utils.book_new();
+
+    let exportMonths = months;
+    if (p === 'HK1') exportMonths = months.slice(0, 4);
+    else if (p === 'HK2') exportMonths = months.slice(4);
+    else if (p !== 'ALL') exportMonths = months.filter(m => m.id === p);
+
+    const yearParts = STATE.namHoc.split('-');
+    const y1 = yearParts[0] || "2026";
+    const y2 = yearParts[1] || "2027";
+
+    exportMonths.forEach(mObj => {
+      const yrTag = ["T9", "T10", "T11", "T12"].includes(mObj.id) ? y1 : y2;
+      const cnSheetName = `CN_${mObj.id}`;
+      const toSheetName = (mObj.id === "T9" || mObj.id === "T10") ? `TO_CM${mObj.id}` : `TCM_${mObj.id}`;
+
+      const cnRows = [
+        ["TRƯỜNG THPT YÊN DŨNG SỐ 3", "", "", "", "", "", ""],
+        [`TỔNG HỢP ĐIỂM THI ĐUA ${STATE.tenTo.toUpperCase()} THÁNG ${mObj.num}.${yrTag}`, "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["Stt", "Họ tên GV", "Tổ chấm tổng điểm cơ sở", "Điểm thưởng, điểm cộng", "", "Mắc lỗi, điểm trừ", ""],
+        ["", "", "", "Nội dung, minh chứng", "Mức điểm", "Nội dung, minh chứng", "Mức điểm"]
+      ];
+
+      const toRows = [
+        ["TRƯỜNG THPT YÊN DŨNG SỐ 3", "", "", "", "", ""],
+        [`TỔ: ${STATE.tenTo.toUpperCase().replace(/^TỔ\s*/i, '')}`, "", "", "", "", ""],
+        [`BẢNG TỔNG HỢP ĐIỂM THI ĐUA THÁNG ${mObj.num}.${yrTag}`, "", "", "", "", ""],
+        ["", "", "", "", "", ""],
+        ["TT", "Họ và tên giáo viên", "Môn", "Tổng điểm cộng", "Tổng điểm trừ", "Tổng điểm"]
+      ];
+
+      STATE.members.forEach((mem, idx) => {
+        const mLogs = STATE.logs.filter(l => l.hoTen === mem.hoTen && l.thang === mObj.id);
+        const plusList = mLogs.filter(l => l.pts > 0);
+        const minusList = mLogs.filter(l => l.pts < 0);
+
+        const sumPlus = Number(plusList.reduce((s, l) => s + l.pts, 0).toFixed(2));
+        const sumMinus = Number(minusList.reduce((s, l) => s + Math.abs(l.pts), 0).toFixed(2));
+        const totalCongWithBase = Number((100 + sumPlus).toFixed(2));
+        const finalScore = Number((totalCongWithBase - sumMinus).toFixed(2));
+
+        const lineCount = Math.max(plusList.length, minusList.length, 4);
+        for (let r = 0; r < lineCount; r++) {
+          const pItem = plusList[r];
+          const mItem = minusList[r];
+          cnRows.push([
+            r === 0 ? (mem.stt || (idx + 1)) : "",
+            r === 0 ? mem.hoTen : "",
+            r === 0 ? 100 : "",
+            pItem ? pItem.note : "",
+            pItem ? pItem.pts : "",
+            mItem ? mItem.note : "",
+            mItem ? Math.abs(mItem.pts) : ""
+          ]);
+        }
+        cnRows.push(["", "", "Tổng", "", totalCongWithBase, "Tổng", sumMinus]);
+
+        toRows.push([
+          mem.stt || (idx + 1),
+          mem.hoTen,
+          mem.nhiemVu || "",
+          totalCongWithBase,
+          sumMinus,
+          finalScore
+        ]);
+      });
+
+      const wsCN = XLSX.utils.aoa_to_sheet(cnRows);
+      wsCN["!merges"] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 6 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 6 } },
+        { s: { r: 3, c: 0 }, e: { r: 4, c: 0 } },
+        { s: { r: 3, c: 1 }, e: { r: 4, c: 1 } },
+        { s: { r: 3, c: 2 }, e: { r: 4, c: 2 } },
+        { s: { r: 3, c: 3 }, e: { r: 3, c: 4 } },
+        { s: { r: 3, c: 5 }, e: { r: 3, c: 6 } }
+      ];
+      wsCN["!cols"] = [{ wch: 6 }, { wch: 24 }, { wch: 16 }, { wch: 38 }, { wch: 12 }, { wch: 38 }, { wch: 12 }];
+      applyTimesNewRomanStyles(wsCN, cnRows.length, 7, 4);
+      XLSX.utils.book_append_sheet(wb, wsCN, cnSheetName);
+
+      const wsTO = XLSX.utils.aoa_to_sheet(toRows);
+      wsTO["!merges"] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 5 } },
+        { s: { r: 2, c: 0 }, e: { r: 2, c: 5 } }
+      ];
+      wsTO["!cols"] = [{ wch: 6 }, { wch: 26 }, { wch: 14 }, { wch: 18 }, { wch: 16 }, { wch: 16 }];
+      applyTimesNewRomanStyles(wsTO, toRows.length, 6, 4);
+      XLSX.utils.book_append_sheet(wb, wsTO, toSheetName);
+    });
+
+    const fileName = p === 'ALL'
+      ? `To_XH_Bang_tong_hop_diem_thi_dua_${STATE.namHoc}.xlsx`
+      : `To_XH_Thi_dua_${p}_${STATE.namHoc}.xlsx`;
+
+    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    const blob = new Blob([wbout], { type: mime });
+
+    if (/Android|iPhone|iPad/i.test(ua) && navigator.canShare) {
+      try {
+        const f = new File([blob], fileName, { type: mime });
+        if (navigator.canShare({ files: [f] })) {
+          await navigator.share({ files: [f], title: fileName });
+          return;
+        }
+      } catch (e) { if (e.name === "AbortError") return; }
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = fileName;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 2000);
+  }
+
+  function printPersonalReport() {
+    const hoTen = document.getElementById('selMember').value;
+    let yearTotal = 0;
+    let monthSummaryRows = months.map(m => {
+      const list = STATE.logs.filter(l => l.hoTen === hoTen && l.thang === m.id);
+      const delta = Number(list.reduce((s, e) => s + e.pts, 0).toFixed(2));
+      const score = Number((100 + delta).toFixed(2));
+      yearTotal += score;
+      return `
+        <tr>
+          <td style="text-align:center;">${m.label}</td>
+          <td style="text-align:center;">100</td>
+          <td style="text-align:center; font-weight:bold; color:${delta >= 0 ? '#15803d' : '#b91c1c'};">${delta >= 0 ? '+' + delta : delta}</td>
+          <td style="text-align:center; font-weight:bold;">${score}</td>
+        </tr>
+      `;
+    }).join('');
+
+    let detailRows = '';
+    let count = 1;
+    months.forEach(m => {
+      const list = STATE.logs.filter(l => l.hoTen === hoTen && l.thang === m.id);
+      list.forEach(item => {
+        detailRows += `
+          <tr>
+            <td style="text-align:center;">${count++}</td>
+            <td style="text-align:center;">${m.label}</td>
+            <td style="text-align:center;">${item.date}</td>
+            <td>${item.note}</td>
+            <td style="text-align:center; font-weight:bold; color:${item.pts >= 0 ? '#15803d' : '#b91c1c'};">
+              ${item.pts >= 0 ? '+' + item.pts : item.pts}
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    if (!detailRows) {
+      detailRows = `<tr><td colspan="5" style="text-align:center; color:#666;">Chưa ghi nhận mục minh chứng cộng trừ nào.</td></tr>`;
+    }
+
+    document.getElementById('printReportArea').innerHTML = `
+      <div style="font-family: 'Times New Roman', Times, serif; line-height: 1.4;">
+        <table style="width:100%; border:none; margin-bottom: 15px;">
+          <tr>
+            <td style="border:none; text-align:center; width:45%; font-size:13px;">SỞ GDĐT THÀNH PHỐ BẮC NINH<br><b>TRƯỜNG THPT YÊN DŨNG SỐ 3</b></td>
+            <td style="border:none; text-align:center; font-size:13px;"><b>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><br><u>Độc lập - Tự do - Hạnh phúc</u></td>
+          </tr>
+        </table>
+        <div style="text-align:center; margin: 15px 0;">
+          <h2 style="margin:0; font-size:18px;">BẢNG KÊ MINH CHỨNG ĐIỂM THI ĐUA GIÁO VIÊN</h2>
+          <div style="font-size:14px; font-style:italic;">Năm học: ${STATE.namHoc} (Theo Quyết định số 242/QĐ-THPTYD3)</div>
+        </div>
+        <div style="font-size:14px; margin-bottom: 12px;">
+          <div><b>Họ và tên giáo viên:</b> ${hoTen}</div>
+          <div><b>Đơn vị:</b> ${STATE.tenTo}</div>
+        </div>
+        <h4 style="margin: 12px 0 6px; font-size:14px;">1. Bảng tổng hợp điểm 9 tháng năm học (Tháng 9 → Tháng 5)</h4>
+        <table>
+          <thead><tr><th>Tháng</th><th>Quỹ điểm quy định</th><th>Biến động (+/-)</th><th>Điểm đạt được</th></tr></thead>
+          <tbody>
+            ${monthSummaryRows}
+            <tr style="background-color: #f1f5f9; font-weight:bold;">
+              <td style="text-align:center;">TỔNG CẢ NĂM HỌC</td><td style="text-align:center;">900</td><td style="text-align:center;">-</td>
+              <td style="text-align:center; font-size:15px; color:#0369a1;">${Number(yearTotal.toFixed(2))}</td>
+            </tr>
+          </tbody>
+        </table>
+        <h4 style="margin: 18px 0 6px; font-size:14px;">2. Danh mục chi tiết các minh chứng cộng / trừ điểm</h4>
+        <table>
+          <thead><tr><th style="width:40px;">STT</th><th style="width:75px;">Tháng</th><th style="width:85px;">Thời gian</th><th>Nội dung công việc / Minh chứng</th><th style="width:70px;">Điểm</th></tr></thead>
+          <tbody>${detailRows}</tbody>
+        </table>
+        <table style="width:100%; border:none; margin-top: 35px;">
+          <tr>
+            <td style="border:none; text-align:center; width:50%; font-size:14px;"><b>TỔ TRƯỞNG CHUYÊN MÔN</b><br><i>(Ký và ghi rõ họ tên)</i></td>
+            <td style="border:none; text-align:center; width:50%; font-size:14px;"><i>Yên Dũng, ngày ..... tháng ..... năm 202...</i><br><b>GIÁO VIÊN XÁC NHẬN</b><br><i>(Ký và ghi rõ họ tên)</i></td>
+          </tr>
+        </table>
+      </div>
+    `;
+    window.print();
+  }
+</script>
+</body>
+</html>
