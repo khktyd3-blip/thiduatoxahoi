@@ -176,6 +176,8 @@
     }
     .btn-save { background: var(--primary); color: #fff; font-weight: 700; border: none; cursor: pointer; }
     .btn-save:hover { background: var(--primary-dark); }
+    .btn-base { background: #15803d; color: #fff; font-weight: 700; border: none; cursor: pointer; }
+    .btn-base:hover { background: #166534; }
     .btn-excel { background: #15803d; color: #fff; border: none; font-weight: 600; cursor: pointer; }
     .btn-print { background: #0369a1; color: #fff; border: none; font-weight: 600; cursor: pointer; }
     .btn-ref { background: #fff; color: #0369a1; border: 1px solid #0369a1; font-weight: 600; cursor: pointer; }
@@ -576,6 +578,7 @@
           </label>
 
           <button class="btn-save" id="btnSaveEntry" onclick="addEntry()" style="margin-top: 4px;">💾 Lưu điểm vào hệ thống</button>
+          <button type="button" class="btn-base" id="btnConfirmBase" onclick="confirmBaseScore()" style="margin-top: 2px;">✅ Xác nhận bảo lưu 100 điểm cơ sở (Không biến động)</button>
         </div>
       </div>
 
@@ -752,9 +755,13 @@
       const tongDiemTru = Number(mLogs.filter(l => l.pts < 0).reduce((s, l) => s + Math.abs(l.pts), 0).toFixed(2));
       const tongDiem = Number((tongDiemCong - tongDiemTru).toFixed(2));
 
-      const statusBadge = mLogs.length > 0
-        ? `<span class="badge-done">Đã chấm (${mLogs.length})</span>`
-        : `<span class="badge-base">Quỹ cơ sở</span>`;
+      let statusBadge = `<span class="badge-base">Quỹ cơ sở</span>`;
+      if (mLogs.length > 0) {
+        const isOnlyReserve = mLogs.every(l => l.pts === 0);
+        statusBadge = isOnlyReserve
+          ? `<span class="badge-done">Đã bảo lưu</span>`
+          : `<span class="badge-done">Đã chấm (${mLogs.length})</span>`;
+      }
 
       return `<tr>
         <td>${m.stt || (idx + 1)}</td>
@@ -771,7 +778,7 @@
     document.getElementById('tbodyTeam').innerHTML = rowsHtml;
     const pText = document.getElementById('teamPeriod').selectedOptions[0].text;
     document.getElementById('teamStatusStrip').innerHTML =
-      `<b>Tiến độ ${pText}:</b> Đã có <b>${hasInputCount}/${STATE.members.length}</b> giáo viên nhập minh chứng cộng/trừ.`;
+      `<b>Tiến độ ${pText}:</b> Đã có <b>${hasInputCount}/${STATE.members.length}</b> giáo viên hoàn thành chấm điểm / xác nhận bảo lưu.`;
   }
 
   function renderMonthCards() {
@@ -781,8 +788,8 @@
       const list = STATE.logs.filter(l => l.hoTen === hoTen && l.thang === m.id);
       const delta = Number(list.reduce((sum, item) => sum + item.pts, 0).toFixed(2));
       const score = Number((100 + delta).toFixed(2));
-      const badgeText = delta > 0 ? `+${delta}` : (delta < 0 ? `${delta}` : '0');
-      const badgeColor = delta > 0 ? 'var(--success)' : (delta < 0 ? 'var(--danger)' : '#94a3b8');
+      const badgeText = delta > 0 ? `+${delta}` : (delta < 0 ? `${delta}` : (list.length > 0 ? 'Bảo lưu' : '0'));
+      const badgeColor = delta > 0 ? 'var(--success)' : (delta < 0 ? 'var(--danger)' : (list.length > 0 ? '#0369a1' : '#94a3b8'));
 
       return `
         <div class="month-card ${m.id === currentM ? 'active' : ''}" onclick="pickMonth('${m.id}')">
@@ -885,6 +892,38 @@
     }
   }
 
+  async function confirmBaseScore() {
+    const hoTen = document.getElementById('selMember').value;
+    if (!hoTen) return alert("Vui lòng chọn họ và tên giáo viên trước!");
+
+    const curList = STATE.logs.filter(l => l.hoTen === hoTen && l.thang === currentM);
+    if (curList.length > 0) {
+      return alert("Tháng này bạn đã có dữ liệu chấm điểm trên hệ thống rồi!");
+    }
+
+    const curObj = months.find(m => m.id === currentM);
+    if (!confirm(`Xác nhận đ/c ${hoTen} bảo lưu 100 điểm cơ sở trong ${curObj.label}?`)) return;
+
+    const btn = document.getElementById('btnConfirmBase');
+    btn.disabled = true; btn.innerText = "⏳ Đang xác nhận...";
+    try {
+      const res = await postApi({
+        action: "addEntry",
+        namHoc: STATE.namHoc,
+        hoTen: hoTen,
+        thang: currentM,
+        pts: 0,
+        note: "Xác nhận bảo lưu điểm cơ sở (không biến động)"
+      });
+      alert(res.msg);
+      if (res.success) await loadFromSheets(false);
+    } catch (e) {
+      alert("Lỗi kết nối: " + e.message);
+    } finally {
+      btn.disabled = false; btn.innerText = "✅ Xác nhận bảo lưu 100 điểm cơ sở (Không biến động)";
+    }
+  }
+
   function updateDetailUI() {
     const hoTen = document.getElementById('selMember').value;
     if (!hoTen) return;
@@ -924,8 +963,8 @@
           <small style="color: #94a3b8;">${e.date}</small>
         </div>
         <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
-          <b style="color: ${e.pts >= 0 ? 'var(--success)' : 'var(--danger)'}; font-size: 15px;">
-            ${e.pts >= 0 ? '+' : ''}${e.pts}
+          <b style="color: ${e.pts > 0 ? 'var(--success)' : (e.pts < 0 ? 'var(--danger)' : '#0369a1')}; font-size: 15px;">
+            ${e.pts > 0 ? '+' + e.pts : e.pts}
           </b>
           <button class="btn-del" title="Xóa" onclick="deleteEntry('${e.id}')">✕</button>
         </div>
